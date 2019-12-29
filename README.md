@@ -1,0 +1,2 @@
+# stookalert
+PyPi stookalert package
