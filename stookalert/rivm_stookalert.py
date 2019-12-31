@@ -1,11 +1,13 @@
 import json
-import requests
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime, timedelta
 
-PROVINCES = ["groningen", "friesland", "drenthe", "overijssel", "gelderland", "utrecht", "noord-holland", "zuid-holland", "zeeland", "noord-brabant", "limburg", "flevoland"]
+import requests
+
 UPDATEHOUR = 12
-RESETHOUR = 3 
+RESETHOUR = 3
+NAME = "naam"
+VALUE = "waarde"
 _LOGGER = logging.getLogger(__name__)
 
 class stookalert(object):
@@ -13,13 +15,13 @@ class stookalert(object):
     def __init__(self, province):
         self._state = None
         self._alerts = {}
-        self._province = self.check_province(province)
+        self._province = province.lower()
         self._last_updated = None
 
         if self._province is not None: 
             _LOGGER.info(f"Setting up Stookalert for province {province}")
         else:
-            _LOGGER.info(f"Invalid province {province}. Please select one of the following: {PROVINCES}")
+            _LOGGER.info("Please provide a province name")
     
     def get_alert(self):
         alerts = self.request()
@@ -28,11 +30,8 @@ class stookalert(object):
             return
 
         for a in alerts:
-            province = a.get("naam", "").lower()
-            value = a.get("waarde", None)
-
-            if not self.check_province(province):
-                continue
+            province = a.get(NAME, "").lower()
+            value = a.get(VALUE, None)
 
             self._alerts[province] = value
 
@@ -41,12 +40,12 @@ class stookalert(object):
 
     def request(self):
         try:            
-            response = requests.get(self.get_url())
+            response = requests.get(self.get_url(), timeout=10)
             
             self._last_updated = datetime.now()
             json_response = json.loads(response.text)
 
-            return sorted(json_response, key = lambda i: i['naam']) 
+            return sorted(json_response, key = lambda i: i[NAME]) 
         except requests.exceptions.RequestException:
             _LOGGER.error("Error getting Stookalert data")
 
@@ -59,11 +58,3 @@ class stookalert(object):
             return f"https://www.rivm.nl/media/lml/stookalert/stookalert_noalert.json"
 
         return f"https://www.rivm.nl/media/lml/stookalert/stookalert_{updateDay.strftime('%Y%m%d')}.json"
-    
-    def check_province(self, province):
-        find_province = province.lower()
-        
-        if find_province in PROVINCES:
-            return find_province
-        else:
-            return None
