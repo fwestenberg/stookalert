@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
   name = 'stookalert',
   packages = ['stookalert'],
-  version = '0.1.3',
+  version = '0.1.4',
   license='MIT',
   description = 'Stookalert package',
   author = 'fwestenberg',
   author_email = '',
   url = 'https://github.com/fwestenberg/stookalert',
-  download_url = 'https://github.com/fwestenberg/stookalert/archive/v_012.tar.gz',
+  download_url = 'https://github.com/fwestenberg/stookalert/archive/v_014.tar.gz',
   keywords = ['Stookalert', 'Home-Assistant'],
   install_requires=[
           'requests',
