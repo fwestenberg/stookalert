@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'stookalert',
   packages = ['stookalert'],
-  version = '0.1.2',
+  version = '0.1.3',
   license='MIT',
   description = 'Stookalert package',
   author = 'fwestenberg',
