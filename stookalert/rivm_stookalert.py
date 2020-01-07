@@ -23,7 +23,15 @@ class stookalert(object):
         else:
             _LOGGER.info("Please provide a province name")
     
-    def get_alert(self):
+    @property
+    def state(self):
+        return self._state
+
+    @property
+    def last_updated(self):
+        return self._last_updated
+
+    def get_alerts(self):
         alerts = self.request()
         
         if alerts is None:
